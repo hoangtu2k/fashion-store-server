@@ -1,9 +1,12 @@
 package com.fashionstoreserver.fashion_store_server.service;
 
+import com.fashionstoreserver.fashion_store_server.entity.Cart;
 import com.fashionstoreserver.fashion_store_server.entity.Customer;
 import com.fashionstoreserver.fashion_store_server.enums.Status;
+import com.fashionstoreserver.fashion_store_server.repository.CartRepository;
 import com.fashionstoreserver.fashion_store_server.repository.CustomerRepository;
 import com.fashionstoreserver.fashion_store_server.request.CustomerRegisterRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CustomerService {
 
+    private final CartRepository cartRepository;
     private final CustomerRepository customerRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
@@ -21,8 +25,9 @@ public class CustomerService {
         return customerRepository.findByIdentifier(identifier);
     }
 
+    @Transactional
     public Customer registerCustomer(CustomerRegisterRequest request) {
-        // Kiểm tra username hoặc email đã tồn tại chưa
+        // 1. Kiểm tra username hoặc email đã tồn tại chưa
         if (customerRepository.existsByUsername(request.getUsername())) {
             throw new RuntimeException("Username đã tồn tại");
         }
@@ -30,6 +35,7 @@ public class CustomerService {
             throw new RuntimeException("Email đã tồn tại");
         }
 
+        // 2. Tạo mới khách hàng
         Customer customer = Customer.builder()
                 .code("KH-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase())
                 .name(request.getName())
@@ -42,6 +48,14 @@ public class CustomerService {
                 .status(Status.ACTIVE)
                 .build();
 
-        return customerRepository.save(customer);
+        Customer savedCustomer = customerRepository.save(customer);
+
+        // 3. Tạo giỏ hàng cho khách hàng vừa đăng ký
+        Cart cart = new Cart();
+        cart.setCustomer(savedCustomer); // Nếu quan hệ ManyToOne hoặc OneToOne
+        cartRepository.save(cart);
+
+        return savedCustomer;
     }
+
 }

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/auth/customers")
 public class AuthCustomer {
 
     @Autowired
@@ -31,7 +31,7 @@ public class AuthCustomer {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest, BindingResult result) {
         String token = null;
         if (result.hasErrors()){
@@ -64,5 +64,17 @@ public class AuthCustomer {
         tokenMap.put("username",jwtTokenUtil.getUsernameFromToken(token));
         return new ResponseEntity<Map<String,Object>>(tokenMap,HttpStatus.OK);
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCustomerByToken(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        String username = jwtTokenUtil.getUsernameFromToken(token);
+        Customer customer = service.login(username);
+        if (customer == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token không hợp lệ");
+        }
+        return ResponseEntity.ok(customer);
+    }
+
 
 }

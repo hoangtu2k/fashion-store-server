@@ -6,14 +6,15 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 @Entity
-@Table(name = "customers")
-public class Customer {
+@Table(name = "users")
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,29 +23,23 @@ public class Customer {
     @Column(nullable = false, unique = true)
     private String code;
 
-    @NotNull
-    private String name;
+    @Column(length = 150)
+    private String fullName;
 
-    @NotNull
-    @Column(nullable = false, unique = true)
+    @Column(length = 150)
+    private String email;
+
+    @Column(nullable = false, unique = true, length = 100)
     private String username;
 
-    @NotNull
     @Column(nullable = false)
     private String password;
 
     private String phone;
 
-    @NotNull
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    private LocalDate dateOfBirth;
-
-    private String address;
-
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @NotNull
+    @Column(nullable = false)
     private Status status;
 
     @CreatedDate
@@ -53,10 +48,6 @@ public class Customer {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
-    // Quan hệ 1-1 với Cart
-    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
-    private Cart cart;
 
     @PrePersist
     protected void onCreate() {
@@ -67,5 +58,13 @@ public class Customer {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-}
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
+
+}
