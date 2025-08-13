@@ -8,8 +8,11 @@ import java.util.Set;
 @AllArgsConstructor
 @Data
 public class UserRequest {
+    private String fullName;
+    private String email;
+    private String phone;
     private String username;
-    private String password;
+    private String code;
+    private String status; // enum dưới dạng String (ví dụ: "ACTIVE", "INACTIVE")
     private Set<Long> roleIds;
-    private Set<Long> permissionIds;
 }
