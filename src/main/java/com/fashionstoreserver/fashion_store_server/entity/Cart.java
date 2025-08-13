@@ -1,5 +1,7 @@
 package com.fashionstoreserver.fashion_store_server.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +21,7 @@ public class Cart {
     // Liên kết với khách hàng (1 khách hàng - 1 giỏ hàng)
     @OneToOne
     @JoinColumn(name = "customer_id", nullable = false, unique = true)
+    @JsonIgnore
     private Customer customer;
 
     // Danh sách sản phẩm trong giỏ

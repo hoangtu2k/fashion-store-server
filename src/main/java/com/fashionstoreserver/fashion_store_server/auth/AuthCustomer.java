@@ -1,6 +1,5 @@
 package com.fashionstoreserver.fashion_store_server.auth;
 
-import com.fashionstoreserver.fashion_store_server.bean.JwtTokenUtil;
 import com.fashionstoreserver.fashion_store_server.entity.Customer;
 import com.fashionstoreserver.fashion_store_server.enums.Status;
 import com.fashionstoreserver.fashion_store_server.service.CustomerService;

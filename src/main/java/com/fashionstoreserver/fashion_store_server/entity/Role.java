@@ -1,13 +1,8 @@
 package com.fashionstoreserver.fashion_store_server.entity;
 
-import com.fashionstoreserver.fashion_store_server.enums.Status;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,15 +20,9 @@ public class Role {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    // Quan hệ ManyToMany với User (mappedBy ở Role vì User sở hữu quan hệ này)
     @ManyToMany(mappedBy = "roles")
+    @JsonBackReference
     private Set<User> users = new HashSet<>();
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "role_permissions",
-            joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id")
-    )
-    private Set<Permission> permissions = new HashSet<>();
 
 }

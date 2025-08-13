@@ -1,4 +1,4 @@
-package com.fashionstoreserver.fashion_store_server.bean;
+package com.fashionstoreserver.fashion_store_server.auth;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

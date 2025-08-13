@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -20,6 +21,10 @@ public class CustomerService {
     private final CartRepository cartRepository;
     private final CustomerRepository customerRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+
+    public List<Customer> getAllCustomersNewestFirst() {
+        return customerRepository.findAllByOrderByCreatedAtDesc();
+    }
 
     public Customer login(String identifier) {
         return customerRepository.findByIdentifier(identifier);

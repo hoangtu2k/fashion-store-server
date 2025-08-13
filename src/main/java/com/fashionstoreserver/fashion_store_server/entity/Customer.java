@@ -1,6 +1,7 @@
 package com.fashionstoreserver.fashion_store_server.entity;
 
 import com.fashionstoreserver.fashion_store_server.enums.Status;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -56,6 +57,7 @@ public class Customer {
 
     // Quan hệ 1-1 với Cart
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Cart cart;
 
     @PrePersist

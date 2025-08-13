@@ -1,6 +1,5 @@
 package com.fashionstoreserver.fashion_store_server.controller.admin;
 
-import com.fashionstoreserver.fashion_store_server.bean.RequirePermission;
 import com.fashionstoreserver.fashion_store_server.entity.User;
 import com.fashionstoreserver.fashion_store_server.request.UserRequest;
 import com.fashionstoreserver.fashion_store_server.service.UserService;
@@ -9,37 +8,35 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/admin/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping
-    @RequirePermission("MANAGE_USERS")
-    public ResponseEntity<?> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @PostMapping
-    public User createUser(@RequestBody UserRequest request) {
-        return userService.createUser(request);
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody UserRequest request) {
-        return userService.updateUser(id, request);
+    @PutMapping("/{id}/roles")
+    public ResponseEntity<?> updateUserRoles(@PathVariable Long id, @RequestBody Set<Long> roleIds) {
+        userService.updateUserRoles(id, roleIds);
+        return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-    }
 
-    @PostMapping("/{username}/roles/{roleName}")
-    public void assignRole(@PathVariable String username, @PathVariable String roleName) {
-        userService.assignRoleToUser(username, roleName);
-    }
+
+
 }
+
