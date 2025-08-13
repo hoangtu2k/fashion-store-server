@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Data
 public class CustomerRegisterRequest {
     @NotBlank(message = "Name không được để trống")
-    private String name;
+    private String fullName;
 
     @NotBlank(message = "Username không được để trống")
     private String username;

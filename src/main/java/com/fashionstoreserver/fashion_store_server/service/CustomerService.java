@@ -38,7 +38,7 @@ public class CustomerService {
         // 2. Tạo mới khách hàng
         Customer customer = Customer.builder()
                 .code("KH-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase())
-                .name(request.getName())
+                .fullName(request.getFullName())
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phone(request.getPhone())

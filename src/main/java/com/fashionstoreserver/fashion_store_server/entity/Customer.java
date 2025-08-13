@@ -23,7 +23,7 @@ public class Customer {
     private String code;
 
     @NotNull
-    private String name;
+    private String fullName;
 
     @NotNull
     @Column(nullable = false, unique = true)
